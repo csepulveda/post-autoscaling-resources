@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./api
+    ports:
+      - "8080:8080"
+    environment:
+      QUEQUE_URL: https://sqs.us-east-1.amazonaws.com/489853078485/messages
+    volumes:
+      - ~/.aws_cesar:/root/.aws
+
+  external-api:
+    build: ./external-api
+    ports:
+      - "8081:8080"
+    depends_on:
+      - api
+
+  worker:
+    build: ./worker
+    depends_on:
+      - api
+    environment:
+      QUEQUE_URL: https://sqs.us-east-1.amazonaws.com/489853078485/messages
+      FRACTAL_API_BASE_URL: http://external-api:8080
+    volumes:
+      - ~/.aws_cesar:/root/.aws
+
