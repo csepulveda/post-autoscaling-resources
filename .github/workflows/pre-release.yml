@@ -20,10 +20,10 @@ jobs:
       attestations: write
       id-token: write
 
-    # Find all subdirectories containing a Dockerfile
+    # Define the directories as a matrix
     strategy:
       matrix:
-        directory: ${{ toJson(fromJSON('["api", "external-api", "worker"]')) }}
+        directory: ["api", "external-api", "worker"]
 
     steps:
       - name: Checkout repository
