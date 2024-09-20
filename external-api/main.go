@@ -32,9 +32,9 @@ func RandomFractal(id string) Fractal {
 	return Fractal{
 		ID:            id,
 		FractalType:   fractalTypes[rand.Intn(len(fractalTypes))],
-		Width:         rand.Intn(1920-800+1) + 800,
-		Height:        rand.Intn(1080-600+1) + 600,
-		MaxIterations: rand.Intn(2000-500+1) + 500,
+		Width:         rand.Intn(1024-800+1) + 800,
+		Height:        rand.Intn(768-600+1) + 600,
+		MaxIterations: rand.Intn(1000-500+1) + 500,
 		ColorScheme:   colorSchemes[rand.Intn(len(colorSchemes))],
 		CenterX:       RandomFloat(-2.0, 2.0),
 		CenterY:       RandomFloat(-2.0, 2.0),
@@ -50,7 +50,7 @@ func fractalHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	id := pathParts[2]
 
-	time.Sleep(time.Duration(rand.Intn(300)+1500) * time.Millisecond)
+	time.Sleep(time.Duration(rand.Intn(3000)+1500) * time.Millisecond)
 	fractal := RandomFractal(id)
 
 	w.Header().Set("Content-Type", "application/json")
