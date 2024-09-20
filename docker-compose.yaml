@@ -6,9 +6,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      QUEQUE_URL: https://sqs.us-east-1.amazonaws.com/489853078485/messages
+      QUEQUE_URL: https://sqs.us-east-1.amazonaws.com/489853078485/worker-input
     volumes:
-      - ~/.aws_cesar:/root/.aws
+      - ~/.aws/:/root/.aws
 
   external-api:
     build: ./external-api
@@ -17,13 +17,23 @@ services:
     depends_on:
       - api
 
-  worker:
-    build: ./worker
+  worker-input:
+    build: ./worker-input
     depends_on:
       - api
     environment:
-      QUEQUE_URL: https://sqs.us-east-1.amazonaws.com/489853078485/messages
+      INPUT_QUEQUE_URL: https://sqs.us-east-1.amazonaws.com/489853078485/worker-input
+      OUTPUT_QUEQUE_URL: https://sqs.us-east-1.amazonaws.com/489853078485/worker-output
       FRACTAL_API_BASE_URL: http://external-api:8080
     volumes:
-      - ~/.aws_cesar:/root/.aws
+      - ~/.aws/:/root/.aws
+
+  worker-output:
+    build: ./worker-output
+    depends_on:
+      - api
+    environment:
+      OUTPUT_QUEQUE_URL: https://sqs.us-east-1.amazonaws.com/489853078485/worker-output
+    volumes:
+      - ~/.aws/:/root/.aws
 

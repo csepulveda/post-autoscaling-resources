@@ -9,7 +9,6 @@ import (
 	"image/png"
 	"log"
 	"math/cmplx"
-	"net/http"
 	"os"
 	"time"
 
@@ -27,10 +26,6 @@ type FractalRequest struct {
 	CenterX       float64 `json:"center_x,omitempty"`
 	CenterY       float64 `json:"center_y,omitempty"`
 	ZoomLevel     int     `json:"zoom_level,omitempty"`
-}
-
-type PostRequest struct {
-	ID string `json:"id"`
 }
 
 type FractalResponse struct {
@@ -122,23 +117,6 @@ func abs(x float64) float64 {
 	return x
 }
 
-func fetchFractalRequest(id string) (FractalRequest, error) {
-	url := fmt.Sprintf("%s/fractals/%s", os.Getenv("FRACTAL_API_BASE_URL"), id)
-	resp, err := http.Get(url)
-	if err != nil {
-		return FractalRequest{}, err
-	}
-	defer resp.Body.Close()
-
-	var fractalRequest FractalRequest
-	err = json.NewDecoder(resp.Body).Decode(&fractalRequest)
-	if err != nil {
-		return FractalRequest{}, err
-	}
-
-	return fractalRequest, nil
-}
-
 func processSQSMessages(queueURL string) {
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
@@ -164,16 +142,10 @@ func processSQSMessages(queueURL string) {
 	}
 
 	for _, message := range resp.Messages {
-		var postRequest PostRequest
-		err := json.Unmarshal([]byte(*message.Body), &postRequest)
+		var fractalRequest FractalRequest
+		err := json.Unmarshal([]byte(*message.Body), &fractalRequest)
 		if err != nil {
 			fmt.Println("Error unmarshalling message body:", err)
-			continue
-		}
-
-		fractalRequest, err := fetchFractalRequest(postRequest.ID)
-		if err != nil {
-			fmt.Println("Error fetching fractal request from external API:", err)
 			continue
 		}
 
@@ -194,9 +166,9 @@ func processSQSMessages(queueURL string) {
 }
 
 func main() {
-	queueURL := os.Getenv("QUEQUE_URL")
+	outputQueueURL := os.Getenv("OUTPUT_QUEQUE_URL")
 
 	for {
-		processSQSMessages(queueURL)
+		processSQSMessages(outputQueueURL)
 	}
 }

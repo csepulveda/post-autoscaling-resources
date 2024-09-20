@@ -23,7 +23,7 @@ jobs:
     # Define the directories as a matrix
     strategy:
       matrix:
-        directory: ["api", "external-api", "worker"]
+        directory: ["api", "external-api", "worker-input", "worker-output"]
 
     steps:
       - name: Checkout repository

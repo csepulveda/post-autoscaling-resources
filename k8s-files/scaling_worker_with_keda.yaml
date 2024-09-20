@@ -59,7 +59,7 @@ spec:
     kind: Deployment
     name: worker-deployment
   minReplicaCount: 0
-  maxReplicaCount: 10
+  maxReplicaCount: 15
   triggers:
     - type: aws-sqs-queue
       metadata:

@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: worker-hpa
+  name: worker-output-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: worker-deployment
+    name: worker-output-deployment
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 15
   metrics:
     - type: Resource
       resource:
