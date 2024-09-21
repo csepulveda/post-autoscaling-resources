@@ -20,7 +20,7 @@ spec:
             - containerPort: 8080
           env:
             - name: QUEQUE_URL
-              value: "https://sqs.us-east-1.amazonaws.com/489853078485/messages"
+              value: "https://sqs.us-east-1.amazonaws.com/489853078485/worker-input"
 
 ---
 apiVersion: apps/v1
